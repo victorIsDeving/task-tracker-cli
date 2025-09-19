@@ -1,11 +1,10 @@
 require "json"
 
-json_path = "./tasks.json"
-
 if ( ARGV.length == 0 )
-    puts "Usage: ruby main.rb COMMAND"
-    puts "More info: ruby main.rb HELP"
+    puts "Usage: ruby main.rb COMMAND ({ID} | {TASK_NAME} | {STATUS})"
 end
+
+json_path = "./tasks.json"
 
 file = File.read(json_path)
 parsed_file = JSON.parse(file)
@@ -25,6 +24,27 @@ if ( ARGV[0] == "add" )
     File.open(json_path, "w") do |f|
         f.write(JSON.pretty_generate(arr))
     end
-    puts arr
+    puts "Task added successfully (ID: #{new_id})"
+end
+
+if ( ARGV[0] == "update" )
+    id = ARGV[1]
+    id = id.to_i
+    new_task_name = ARGV[2]
+    arr = JSON.parse(File.read(json_path))
+    puts "#{id.class}"
+    total_tasks = arr["tasks"].length
+    i = 0
+    while ( i < total_tasks )
+        if ( arr["tasks"][i]["task_id"] == id )
+            arr["tasks"][i]["task_name"] = new_task_name
+            break
+        end
+        i = i + 1
+    end
+    File.open(json_path, "w") do |f|
+        f.write(JSON.pretty_generate(arr))
+    end
+    puts "Updated task ID: #{id} name to \"#{new_task_name}\""
 end
 
