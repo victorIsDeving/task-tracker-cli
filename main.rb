@@ -120,7 +120,16 @@ if ( ARGV[0] == "list")
             i += 1
         end
     else
-        puts "hii"
+        if ( ARGV[1] == "done" )
+            i = 0
+            while ( i < total_tasks )
+                if ( arr["tasks"][i]["task_status"] == "done" )
+                    puts arr["tasks"][i]
+                end
+
+                i += 1
+            end
+        elsif
     end
     
 end
