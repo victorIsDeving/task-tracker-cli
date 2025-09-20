@@ -1,4 +1,5 @@
 require "json"
+require "time"
 
 if ( ARGV.length == 0 )
     puts "Usage: ruby main.rb COMMAND ({ID} | {TASK_NAME} | {STATUS})"
@@ -14,8 +15,10 @@ if ( ARGV[0] == "add" )
     new_id = last_id + 1
     new_entry_hash = {
         "task_id"=> new_id,
-        "task_name"=> ARGV[1],
-        "task_status"=> "to-do"
+        "description"=> ARGV[1],
+        "status"=> "to-do",
+        "created_at"=> Time.now.utc.iso8601,
+        "updated_at"=> Time.now.utc.iso8601
     }
     arr = JSON.parse(File.read(json_path))
     arr["tasks"] << new_entry_hash
@@ -32,15 +35,15 @@ if ( ARGV[0] == "update" )
     id = id.to_i
     new_task_name = ARGV[2]
     arr = JSON.parse(File.read(json_path))
-    puts "#{id.class}"
     total_tasks = arr["tasks"].length
     i = 0
     while ( i < total_tasks )
         if ( arr["tasks"][i]["task_id"] == id )
-            arr["tasks"][i]["task_name"] = new_task_name
+            arr["tasks"][i]["description"] = new_task_name
+            arr["tasks"][i]["updated_at"] = Time.now.utc.iso8601
             break
         end
-        i = i + 1
+        i += 1
     end
     File.open(json_path, "w") do |f|
         f.write(JSON.pretty_generate(arr))
@@ -52,11 +55,11 @@ if ( ARGV[0] == "delete" )
     id = ARGV[1].to_i
     arr = JSON.parse(File.read(json_path))
     total_tasks = arr["tasks"].length
-    # array = arr.ArrayOf("tasks")
     i = 0
     while ( i < total_tasks )
         if ( arr["tasks"][i]["task_id"] == id )
             arr["tasks"].delete(arr["tasks"][i])
+            break
         end
 
         i += 1
@@ -76,7 +79,7 @@ if ( ARGV[0] == "mark-in-progress")
     i = 0
     while ( i < total_tasks )
         if ( arr["tasks"][i]["task_id"] == id )
-            arr["tasks"][i]["task_status"] = "in-progress"
+            arr["tasks"][i]["status"] = "in-progress"
         end
 
         i += 1
@@ -96,7 +99,7 @@ if ( ARGV[0] == "mark-done")
     i = 0
     while ( i < total_tasks )
         if ( arr["tasks"][i]["task_id"] == id )
-            arr["tasks"][i]["task_status"] = "done"
+            arr["tasks"][i]["status"] = "done"
         end
 
         i += 1
@@ -123,7 +126,7 @@ if ( ARGV[0] == "list")
         if ( ARGV[1] == "done" )
             i = 0
             while ( i < total_tasks )
-                if ( arr["tasks"][i]["task_status"] == "done" )
+                if ( arr["tasks"][i]["status"] == "done" )
                     puts arr["tasks"][i]
                 end
 
@@ -132,7 +135,7 @@ if ( ARGV[0] == "list")
         elsif ( ARGV[1] == "in-progress" )
             i = 0
             while ( i < total_tasks )
-                if ( arr["tasks"][i]["task_status"] == "in-progress" )
+                if ( arr["tasks"][i]["status"] == "in-progress" )
                     puts arr["tasks"][i]
                 end
 
@@ -141,7 +144,7 @@ if ( ARGV[0] == "list")
         elsif ( ARGV[1] == "to-do")
             i = 0
             while ( i < total_tasks )
-                if ( arr["tasks"][i]["task_status"] == "to-do" )
+                if ( arr["tasks"][i]["status"] == "to-do" )
                     puts arr["tasks"][i]
                 end
 
