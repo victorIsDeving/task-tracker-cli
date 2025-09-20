@@ -129,7 +129,16 @@ if ( ARGV[0] == "list")
 
                 i += 1
             end
-        elsif
+        elsif ( ARGV[1] == "in-progress" )
+            i = 0
+            while ( i < total_tasks )
+                if ( arr["tasks"][i]["task_status"] == "in-progress" )
+                    puts arr["tasks"][i]
+                end
+
+                i += 1
+            end
+        end 
     end
     
 end
