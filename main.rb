@@ -48,3 +48,23 @@ if ( ARGV[0] == "update" )
     puts "Updated task ID: #{id} name to \"#{new_task_name}\""
 end
 
+if ( ARGV[0] == "delete" )
+    id = ARGV[1].to_i
+    arr = JSON.parse(File.read(json_path))
+    total_tasks = arr["tasks"].length
+    # array = arr.ArrayOf("tasks")
+    i = 0
+    while ( i < total_tasks )
+        if ( arr["tasks"][i]["task_id"] == id )
+            arr["tasks"].delete(arr["tasks"][i])
+        end
+
+        i += 1
+    end
+    
+    File.open(json_path, "w") do |f|
+        f.write(JSON.pretty_generate(arr))
+    end
+
+    puts "Deleted task ID: #{id}"
+end
