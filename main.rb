@@ -15,7 +15,7 @@ if ( ARGV[0] == "add" )
     new_entry_hash = {
         "task_id"=> new_id,
         "task_name"=> ARGV[1],
-        "task_status"=> "todo"
+        "task_status"=> "to-do"
     }
     arr = JSON.parse(File.read(json_path))
     arr["tasks"] << new_entry_hash
@@ -138,7 +138,16 @@ if ( ARGV[0] == "list")
 
                 i += 1
             end
-        end 
+        elsif ( ARGV[1] == "to-do")
+            i = 0
+            while ( i < total_tasks )
+                if ( arr["tasks"][i]["task_status"] == "to-do" )
+                    puts arr["tasks"][i]
+                end
+
+                i += 1
+            end
+        end
     end
     
 end
