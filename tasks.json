@@ -4,7 +4,7 @@
     {
       "task_id": 1,
       "task_name": "New New Task Name",
-      "task_status": "todo"
+      "task_status": "in-progress"
     }
   ]
 }

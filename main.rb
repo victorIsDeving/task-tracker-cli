@@ -61,10 +61,30 @@ if ( ARGV[0] == "delete" )
 
         i += 1
     end
-    
+
     File.open(json_path, "w") do |f|
         f.write(JSON.pretty_generate(arr))
     end
 
     puts "Deleted task ID: #{id}"
+end
+
+if ( ARGV[0] == "mark-in-progress")
+    id = ARGV[1].to_i
+    arr = JSON.parse(File.read(json_path))
+    total_tasks = arr["tasks"].length
+    i = 0
+    while ( i < total_tasks )
+        if ( arr["tasks"][i]["task_id"] == id )
+            arr["tasks"][i]["task_status"] = "in-progress"
+        end
+
+        i += 1
+    end
+
+    File.open(json_path, "w") do |f|
+        f.write(JSON.pretty_generate(arr))
+    end
+
+    puts "Task ID: #{id} marked as IN-PROGRESS"
 end
