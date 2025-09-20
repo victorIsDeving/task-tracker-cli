@@ -108,3 +108,19 @@ if ( ARGV[0] == "mark-done")
 
     puts "Task ID: #{id} marked as DONE"
 end
+
+if ( ARGV[0] == "list")
+    arr = JSON.parse(File.read(json_path))
+    total_tasks = arr["tasks"].length
+    if ( ARGV[1].class == NilClass )
+        i = 0
+        while ( i < total_tasks )
+            puts arr["tasks"][i]
+
+            i += 1
+        end
+    else
+        puts "hii"
+    end
+    
+end
