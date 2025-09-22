@@ -120,5 +120,19 @@ def list_task(status, json_path)
 
             i += 1
         end
+    else
+        instructions()
     end
+end
+
+def instructions()
+    puts "USAGE: ruby main.rb COMMAND"
+    puts "COMMANDS: "
+    puts "    add {TASK_DESCRIPTION}"
+    puts "    update {TASK_ID} {NEW_TASK_DESCRIPTION}"
+    puts "    delete {TASK_ID}"
+    puts "    mark-in-progress {TASK_ID}"
+    puts "    mark-done {TASK_ID}"
+    puts "    list"
+    puts "    list { done | to-do | in-progress }"
 end
