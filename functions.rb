@@ -92,10 +92,14 @@ end
 def list_task(status, json_path)
     arr = JSON.parse(File.read(json_path))
     total_tasks = arr["tasks"].length
+    if ( total_tasks == 0 )
+        puts "No tasks here :/"
+        return
+    end
+    i,j = 0, 0
     case status
     when NilClass
         puts "All tasks:"
-        i = 0
         while ( i < total_tasks )
             puts arr["tasks"][i]
 
@@ -103,37 +107,38 @@ def list_task(status, json_path)
         end
     when "done"
         puts "All tasks marked as DONE:"
-        i = 0
         while ( i < total_tasks )
             if ( arr["tasks"][i]["status"] == "done" )
                 puts arr["tasks"][i]
+                j += 1
             end
 
             i += 1
         end
     when "in-progress"
         puts "All tasks marked as IN-PROGRESS:"
-        i = 0
         while ( i < total_tasks )
             if ( arr["tasks"][i]["status"] == "in-progress" )
                 puts arr["tasks"][i]
+                j += 1
             end
 
             i += 1
         end
     when "to-do"
         puts "All tasks marked as TO-DO:"
-        i = 0
         while ( i < total_tasks )
             if ( arr["tasks"][i]["status"] == "to-do" )
                 puts arr["tasks"][i]
+                j += 1
             end
-
+            
             i += 1
         end
     else
         instructions()
     end
+    if ( j == 0 ) then puts "No tasks" end
 end
 
 def instructions()
