@@ -31,13 +31,14 @@ def update_task_description(id, new_description, json_path)
         if ( arr["tasks"][i]["task_id"] == id )
             arr["tasks"][i]["description"] = new_description
             arr["tasks"][i]["updated_at"] = Time.now.utc.iso8601
-            break
+            File.open(json_path, "w") do |f|
+                f.write(JSON.pretty_generate(arr))
+            end
+            return "Updated task ID: #{id} name to \"#{new_description}\""
         end
         i += 1
     end
-    File.open(json_path, "w") do |f|
-        f.write(JSON.pretty_generate(arr))
-    end
+    return "Task ID: #{id} not found"
 end
 
 def delete_task(id, json_path)
@@ -48,15 +49,15 @@ def delete_task(id, json_path)
     while ( i < total_tasks )
         if ( arr["tasks"][i]["task_id"] == id )
             arr["tasks"].delete(arr["tasks"][i])
-            break
+            File.open(json_path, "w") do |f|
+                f.write(JSON.pretty_generate(arr))
+            end
+            return "Deleted task ID: #{id}"
         end
 
         i += 1
     end
-
-    File.open(json_path, "w") do |f|
-        f.write(JSON.pretty_generate(arr))
-    end
+    return "Task ID: #{id} not found"
 end
 
 def update_task_status(id, status_action, json_path)
@@ -69,17 +70,23 @@ def update_task_status(id, status_action, json_path)
             case status_action 
             when "mark-in-progress"
                 arr["tasks"][i]["status"] = "in-progress"
+                message = "Task ID: #{id} marked as IN-PROGRESS"
             when "mark-done"
                 arr["tasks"][i]["status"] = "done"
+                message = "Task ID: #{id} marked as DONE"
+            when "to-do"
+                arr["tasks"][i]["status"] = "to-do"
+                message = "Task ID: #{id} marked as TO-DO"
             end
+            File.open(json_path, "w") do |f|
+                f.write(JSON.pretty_generate(arr))
+            end
+            return message
         end
 
         i += 1
     end
-
-    File.open(json_path, "w") do |f|
-        f.write(JSON.pretty_generate(arr))
-    end
+    return "Task ID: #{id} not found"
 end
 
 def list_task(status, json_path)
@@ -87,6 +94,7 @@ def list_task(status, json_path)
     total_tasks = arr["tasks"].length
     case status
     when NilClass
+        puts "All tasks:"
         i = 0
         while ( i < total_tasks )
             puts arr["tasks"][i]
@@ -94,6 +102,7 @@ def list_task(status, json_path)
             i += 1
         end
     when "done"
+        puts "All tasks marked as DONE:"
         i = 0
         while ( i < total_tasks )
             if ( arr["tasks"][i]["status"] == "done" )
@@ -103,6 +112,7 @@ def list_task(status, json_path)
             i += 1
         end
     when "in-progress"
+        puts "All tasks marked as IN-PROGRESS:"
         i = 0
         while ( i < total_tasks )
             if ( arr["tasks"][i]["status"] == "in-progress" )
@@ -112,6 +122,7 @@ def list_task(status, json_path)
             i += 1
         end
     when "to-do"
+        puts "All tasks marked as TO-DO:"
         i = 0
         while ( i < total_tasks )
             if ( arr["tasks"][i]["status"] == "to-do" )
@@ -133,6 +144,7 @@ def instructions()
     puts "    delete {TASK_ID}"
     puts "    mark-in-progress {TASK_ID}"
     puts "    mark-done {TASK_ID}"
+    puts "    mark-to-do {TASK_ID}"
     puts "    list"
     puts "    list { done | to-do | in-progress }"
 end
